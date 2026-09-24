@@ -1,0 +1,12 @@
+rules_version = '2';
+
+// Cada usuário logado só pode ler e escrever dentro da própria "gaveta"
+// (usuarios/{o próprio UID}/...). Ninguém, nem outro usuário logado,
+// consegue ler ou alterar os dados de outra conta.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /usuarios/{uidConta}/{documento=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uidConta;
+    }
+  }
+}
